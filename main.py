@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Path, Query, Body, Depends
 from typing import Optional, List, Dict, Annotated
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from fastapi.middleware.cors import CORSMiddleware
 from models import Base, User, Post
@@ -15,7 +15,7 @@ origins = [
 ]
 
 app.add_middleware(
-    CorsMiddleware,
+    CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
@@ -57,7 +57,16 @@ async def create_post(post: PostCreate, db: Session = Depends(get_db)) -> PostRe
 
 @app.get("/posts/", response_model=List[PostResponse])
 async def posts( db: Session = Depends(get_db)):
-    return db.query(Post).all()
+    return db.query(Post).options(joinedload(Post.author_id)).all() # ///
+
+
+@app.get("/users/{name}", response_model=DbUser)
+async def posts(name: str, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.name == name).first()
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return db_user
+
 
 
 

@@ -19,7 +19,7 @@
                 <label for="loginName">Имя:</label>
                 <input type="text" id="loginName" v-model="loginName">
             </div>
-            <button type="submit">авторизоваться</button>
+            <button type="submit">Авторизоваться</button>
         </form>
     </div>
 </template>
@@ -39,15 +39,35 @@ export default {
   },
   methods:{
     async register(){
-        const response = await axios.post('http://127.0.0.1:8000/users/', {
-            name: this.registerName,
-            age: Number(this.registerAge)
-        });
+         try {
+            const response = await axios.post('http://127.0.0.1:8000/users/', {
+                name: this.registerName,
+                age: Number(this.registerAge)
+            });
 
-        console.log('Register success:' + response.data)
-        this.$emit('handleAuth');
+            console.log('Register success:' + response.data)
+            this.$emit('handleRegister')
+
+            this.registerName = ''
+            this.registerAge = ''
+            
+        } catch (error) {
+            console.error('Registration error:', error)
+            alert('Ошибка регистрации')
+        }
     },
     async login() {
+        try {
+            const response = await axios.get(`http://127.0.0.1:8000/users/${this.loginName}`)
+            if (response.data){
+                this.$emit('handleAuth')
+
+                this.loginName = ''
+            }
+        } catch (error) {
+            console.error('Login error:', error)
+            alert('Пользователь не найден');
+        }
     }
   }
 }
