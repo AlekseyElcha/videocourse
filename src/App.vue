@@ -1,6 +1,6 @@
 <template>
   <div id="app"> 
-    <auth-component v-if="isAuth" @handleAuth="handleAuth"/>
+    <auth-component v-if="!isAuth" @handleAuth="handleAuth"/>
     <div v-else>
       <p>Вы авторизованы</p>
     </div>

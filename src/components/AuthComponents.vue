@@ -4,11 +4,11 @@
         <form @submit.prevent="register">
             <div>
                 <label for="registerName">Имя:</label>
-                <input type="text" id="registerName" v-model="registerName"></input>
+                <input type="text" id="registerName" v-model="registerName">
             </div>
              <div>
-                <label for="registerAge">Имя:</label>
-                <input type="text" id="registerAge" v-model="registerAge"></input>
+                <label for="registerAge">Возраст:</label>
+                <input type="text" id="registerAge" v-model="registerAge">
             </div>
             <button type="submit">Зарегистрироваться</button>
         </form>
@@ -17,7 +17,7 @@
         <form @submit.prevent="login">
             <div>
                 <label for="loginName">Имя:</label>
-                <input type="text" id="loginName" v-model="registerName"></input>
+                <input type="text" id="loginName" v-model="loginName">
             </div>
             <button type="submit">авторизоваться</button>
         </form>
@@ -41,13 +41,13 @@ export default {
     async register(){
         const response = await axios.post('http://127.0.0.1:8000/users/', {
             name: this.registerName,
-            age: this.registerAge
+            age: Number(this.registerAge)
         });
 
         console.log('Register success:' + response.data)
+        this.$emit('handleAuth');
     },
     async login() {
-
     }
   }
 }
